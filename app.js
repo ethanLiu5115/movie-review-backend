@@ -2,9 +2,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const usersRouter = require('./routes/users');
 const reviewsRouter = require('./routes/reviews');
-const followersRouter = require('./routes/followers');
+const usersRouter = require('./routes/users');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -16,9 +15,8 @@ mongoose.connect('mongodb://localhost:27017/movie-review')
     .then(() => console.log('MongoDB connected'))
     .catch(err => console.error('MongoDB connection error:', err));
 
-app.use('/api/users', usersRouter);
 app.use('/api/reviews', reviewsRouter);
-app.use('/api/followers', followersRouter);
+app.use('/api/users', usersRouter);
 
 // 处理 404 错误
 app.use((req, res, next) => {

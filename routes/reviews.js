@@ -5,7 +5,7 @@ const Review = require('../models/review');
 // 获取所有评论
 router.get('/', async (req, res) => {
     try {
-        const reviews = await Review.find().sort({ createdAt: -1 }).limit(5);
+        const reviews = await Review.find().sort({ createdAt: -1 });
         res.send(reviews);
     } catch (error) {
         res.status(500).send(error);
