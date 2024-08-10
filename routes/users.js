@@ -29,11 +29,11 @@ router.post('/login', async (req, res) => {
 });
 
 // 获取用户信息
-router.get('/:userId', async (req, res) => {
+router.get('/:id', async (req, res) => {
     try {
-        const user = await User.findOne({ email: req.params.userId });
+        const user = await User.findById(req.params.id);
         if (!user) {
-            return res.status(404).send('User not found');
+            return res.status(404).send({ message: 'User not found' });
         }
         res.status(200).send(user);
     } catch (error) {
@@ -45,7 +45,7 @@ router.get('/:userId', async (req, res) => {
 router.put('/', async (req, res) => {
     const { userId, name, email } = req.body;
     try {
-        const user = await User.findOneAndUpdate({ email: userId }, { name, email }, { new: true });
+        const user = await User.findOneAndUpdate({ _id: userId }, { name, email }, { new: true });
         if (!user) {
             return res.status(404).send('User not found');
         }
