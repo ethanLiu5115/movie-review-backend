@@ -13,11 +13,13 @@ router.get('/', async (req, res) => {
 });
 
 // 获取特定影片的评论
-router.get('/api/reviews', async (req, res) => {
-    const { movieId, userId } = req.query;
+router.get('/movie', async (req, res) => {  // 更改路径为 /movie
+    const { movieId } = req.query;
     try {
-        const query = movieId ? { movieId } : { userId };
-        const reviews = await Review.find(query).sort({ createdAt: -1 });
+        if (!movieId) {
+            return res.status(400).send({ message: "movieId is required" });
+        }
+        const reviews = await Review.find({ movieId }).sort({ createdAt: -1 });
         res.status(200).send(reviews);
     } catch (error) {
         res.status(400).send(error);
@@ -25,7 +27,7 @@ router.get('/api/reviews', async (req, res) => {
 });
 
 // 创建评论
-router.post('/api/reviews', async (req, res) => {
+router.post('/', async (req, res) => {
     const { movieId, userId, review } = req.body;
     const newReview = new Review({ movieId, userId, review });
     try {
