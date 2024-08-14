@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Review = require('../models/review');
+const User = require('../models/user'); // 确保导入 User 模型
 
 // 获取所有评论
 router.get('/', async (req, res) => {
@@ -13,7 +14,7 @@ router.get('/', async (req, res) => {
 });
 
 // 获取特定影片的评论
-router.get('/movie', async (req, res) => {  // 更改路径为 /movie
+router.get('/movie', async (req, res) => {
     const { movieId } = req.query;
     try {
         if (!movieId) {
@@ -29,8 +30,19 @@ router.get('/movie', async (req, res) => {  // 更改路径为 /movie
 // 创建评论
 router.post('/', async (req, res) => {
     const { movieId, userId, review } = req.body;
-    const newReview = new Review({ movieId, userId, review });
     try {
+        const user = await User.findById(userId); // 获取用户信息
+        if (!user) {
+            return res.status(404).send({ message: 'User not found' });
+        }
+
+        const newReview = new Review({
+            movieId,
+            userId,
+            userName: user.name,  // 存储用户名
+            review
+        });
+
         await newReview.save();
         res.status(201).send(newReview);
     } catch (error) {
