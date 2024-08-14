@@ -31,6 +31,9 @@ router.get('/movie', async (req, res) => {  // 更改路径为 /movie
 // 创建评论
 router.post('/', async (req, res) => {
     const { movieId, userId, review } = req.body;
+    if (!review.trim()) {
+        return res.status(400).send({ message: 'You cannot submit an empty review.' });
+    }
     try {
         const user = await User.findById(userId);
         if (!user) {
@@ -48,7 +51,7 @@ router.post('/', async (req, res) => {
         await newReview.save();
         res.status(201).send(newReview);
     } catch (error) {
-        res.status(400).send(error);
+        res.status(400).send({ message: 'Failed to create review. Please try again later.' });
     }
 });
 
