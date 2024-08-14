@@ -40,9 +40,9 @@ router.post('/', async (req, res) => {
         const newReview = new Review({
             movieId,
             userId,
-            userName: user.name,  // 存储用户名
+            userName: user.name,
             review,
-            isApproved: false // 新评论默认未审核
+            approved: false
         });
 
         await newReview.save();
