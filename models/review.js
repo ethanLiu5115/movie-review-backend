@@ -1,4 +1,3 @@
-// models/review.js
 const mongoose = require('mongoose');
 
 const reviewSchema = new mongoose.Schema({
@@ -7,7 +6,7 @@ const reviewSchema = new mongoose.Schema({
     userName: { type: String, required: true },
     review: { type: String, required: true },
     createdAt: { type: Date, default: Date.now },
-    isApproved: { type: Boolean, default: false } // 新增字段，默认未审核
+    isApproved: { type: Boolean, default: false }
 });
 
 const Review = mongoose.model('Review', reviewSchema);

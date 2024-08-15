@@ -1,8 +1,8 @@
-// routes/reviews.js
 const express = require('express');
 const router = express.Router();
 const Review = require('../models/review');
-const User = require('../models/user'); // 确保引入User模型
+const User = require('../models/user');
+const WatchHistory = require('../models/watchHistory');
 
 // 获取所有评论
 router.get('/', async (req, res) => {
@@ -15,12 +15,18 @@ router.get('/', async (req, res) => {
 });
 
 // 获取特定影片的评论
-router.get('/movie', async (req, res) => {  // 更改路径为 /movie
-    const { movieId } = req.query;
+router.get('/movie', async (req, res) => {
+    const { movieId, userId } = req.query;
     try {
         if (!movieId) {
             return res.status(400).send({ message: "movieId is required" });
         }
+
+        // 记录用户浏览历史
+        if (userId) {
+            await WatchHistory.create({ userId, movieId });
+        }
+
         const reviews = await Review.find({ movieId, isApproved: true }).sort({ createdAt: -1 });
         res.status(200).send(reviews);
     } catch (error) {
@@ -38,6 +44,10 @@ router.post('/', async (req, res) => {
         const user = await User.findById(userId);
         if (!user) {
             return res.status(404).send({ message: 'User not found' });
+        }
+
+        if (user.role === 'guest') {
+            return res.status(403).send({ message: 'Guests are not allowed to submit reviews.' });
         }
 
         const newReview = new Review({

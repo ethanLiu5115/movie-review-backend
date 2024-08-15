@@ -1,4 +1,3 @@
-// routes/users.js
 const express = require('express');
 const router = express.Router();
 const User = require('../models/user');
@@ -7,17 +6,16 @@ const User = require('../models/user');
 router.post('/register', async (req, res) => {
     const { name, email, password, role } = req.body;
     try {
-        // 检查邮箱是否已注册
         const existingUser = await User.findOne({ email });
         if (existingUser) {
-            return res.status(400).send({ message: 'The email address has been used. Please use another one. ' });
+            return res.status(400).send({ message: 'The email address has been used. Please use another one.' });
         }
 
         const newUser = new User({ name, email, password, role });
         await newUser.save();
         res.status(201).send({ user: newUser });
     } catch (error) {
-        res.status(400).send({ message: 'Registration failed. Try again later. ' });
+        res.status(400).send({ message: 'Registration failed. Try again later.' });
     }
 });
 
