@@ -24,7 +24,17 @@ router.get('/movie', async (req, res) => {
 
         // 记录用户浏览历史
         if (userId) {
-            await WatchHistory.create({ userId, movieId });
+            const existingHistory = await WatchHistory.findOne({
+                userId,
+                movieId,
+                watchedAt: {
+                    $gte: new Date(Date.now() - 3000) // 检查3秒内的重复记录
+                }
+            });
+
+            if (!existingHistory) {
+                await WatchHistory.create({ userId, movieId });
+            }
         }
 
         const reviews = await Review.find({ movieId, isApproved: true }).sort({ createdAt: -1 });
